@@ -23,12 +23,29 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+    // 로그인만 예외로 POST한다
+    @PostMapping("/login")
+    public String login(UserRequest.LoginDTO requestDTO) {
+        // 1. 유효성 검사
+        if (requestDTO.getUsername().length() < 3) {
+            return "error/400";
+        }
+
+        // 2. Model 필요 (select * from user_tb where username=? and password=?)
+        User user = userRepository.findByUsernameAndPassword(requestDTO);
+
+        System.out.println(user);
+
+        // 3. 응답
+        return "redirect:/";
+    }
+
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO requestDTO){
+    public String join(UserRequest.JoinDTO requestDTO) {
         System.out.println(requestDTO);
 
         // 1. 유효성 검사
-        if(requestDTO.getUsername().length() < 3){
+        if (requestDTO.getUsername().length() < 3) {
             return "error/400";
         }
         // 2. Model에게 위임하기
