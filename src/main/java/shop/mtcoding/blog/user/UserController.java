@@ -1,8 +1,11 @@
 package shop.mtcoding.blog.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * 컨트롤러
@@ -14,14 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
  * 6. View만 원하면 View를 응답하면 끝
  * 7. DB처리를 원하면 Model(DAO)에게 위임 후 View를 응답하면 끝
  */
+
+@RequiredArgsConstructor
 @Controller
 public class UserController {
 
-    private UserRepository userRepository;
-
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
+    private final HttpSession session;
 
     // 로그인만 예외로 POST한다
     @PostMapping("/login")
@@ -34,10 +36,18 @@ public class UserController {
         // 2. Model 필요 (select * from user_tb where username=? and password=?)
         User user = userRepository.findByUsernameAndPassword(requestDTO);
 
-        System.out.println(user);
+        // 유저가 null이면, error 페이지로
+        // 3. 응답 유저가 null이 아니면, session 만들고, index 페이지로 이동
+        if(user == null){
+            return "error/401";
+        }else{
+            session.setAttribute("sessionUser",user);
+            return "redirect:/";
+        }
 
-        // 3. 응답
-        return "redirect:/";
+
+
+
     }
 
     @PostMapping("/join")
@@ -49,7 +59,7 @@ public class UserController {
             return "error/400";
         }
         // 2. Model에게 위임하기
-        userRepository.saveV2(requestDTO);
+        userRepository.save(requestDTO);
 
         // 3. 응답하기
         return "redirect:/loginForm";

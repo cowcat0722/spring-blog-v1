@@ -17,8 +17,7 @@ public class UserRepository {
 
     @Transactional
     public void save(UserRequest.JoinDTO requestDTO){
-        Query query = em.createNativeQuery("insert into user_tb(username,password,email)" +
-                "values (?,?,?)");
+        Query query = em.createNativeQuery("insert into user_tb(username,password,email) values (?,?,?)");
         query.setParameter(1,requestDTO.getUsername());
         query.setParameter(2,requestDTO.getPassword());
         query.setParameter(3,requestDTO.getEmail());
