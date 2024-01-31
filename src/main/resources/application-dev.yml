@@ -18,6 +18,10 @@ spring:
   h2:
     console:
       enabled: true
+  sql:
+    init:
+      data-locations:
+        - classpath:db/data.sql
   # Spring Server가 실행될떄 @Entity를 찾아 분석하여 create함
   jpa:
     hibernate:
@@ -26,3 +30,4 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
