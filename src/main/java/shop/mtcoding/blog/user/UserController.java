@@ -45,9 +45,6 @@ public class UserController {
             return "redirect:/";
         }
 
-
-
-
     }
 
     @PostMapping("/join")
