@@ -10,6 +10,7 @@ server:
 spring:
   mustache:
     servlet:
+      # session과 request 저장영역에 접근할 수 있음
       expose-session-attributes: true
       expose-request-attributes: true
   datasource:
