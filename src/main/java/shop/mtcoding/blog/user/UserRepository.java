@@ -1,10 +1,9 @@
 package shop.mtcoding.blog.user;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 @Repository // 컴포넌트 스캔
 public class UserRepository {
