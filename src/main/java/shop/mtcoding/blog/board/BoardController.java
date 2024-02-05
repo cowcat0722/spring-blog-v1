@@ -24,6 +24,7 @@ public class BoardController {
     public String search(HttpServletRequest request, @RequestParam("title") String title){
         List<Board> boardList = boardRepository.findAll(title);
         request.setAttribute("boardList",boardList);
+
         return "index";
     }
 

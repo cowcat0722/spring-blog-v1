@@ -27,6 +27,16 @@ public class BoardRepository {
         return totalCount;
     }
 
+    // 페이징 과정
+//    public int searchCount(String title){
+//        Query query = em.createNativeQuery("select count(*) from board_tb where title like ? ");
+//        query.setParameter(1,"%"+title+"%");
+//
+//        int searchCount = ((Number) query.getSingleResult()).intValue();
+//
+//        return searchCount;
+//    }
+
     public List<Board> findAll(String title){
         Query query = em.createNativeQuery("select * from board_tb where title like ? order by id desc",Board.class);
         query.setParameter(1,"%"+title+"%");
@@ -34,6 +44,7 @@ public class BoardRepository {
         List<Board> boardList = query.getResultList();
 
         return boardList;
+
     }
 
     public List<Board> findAll(int page){
