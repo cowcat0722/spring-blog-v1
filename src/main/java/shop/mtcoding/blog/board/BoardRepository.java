@@ -63,7 +63,6 @@ public class BoardRepository {
 
     @Transactional
     public void save(BoardResponse.SaveDTO saveDTO){
-        String userId = (String) session.getAttribute("USER_ID");
         User sessionUser = (User) session.getAttribute("sessionUser");
         Query query = em.createNativeQuery("insert into board_tb(title,content,user_id) values (?,?,?)");
 
