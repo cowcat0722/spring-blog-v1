@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Repository;
 import shop.mtcoding.blog._core.Constant;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,9 +41,21 @@ public class BoardRepository {
                 "on bt.user_id = ut.id where bt.id=?");
         query.setParameter(1,id);
 
-        JpaResultMapper rm = new JpaResultMapper();
+        JpaResultMapper rm = new JpaResultMapper(); // qlrm
+
+        // 기본기
+//        Object[] row = (Object[]) query.getSingleResult();
+//
+//        Integer bid = (Integer) row[0];
+//        String title = (String) row[1];
+//        String content = (String) row[2];
+//        Timestamp created_at = (Timestamp) row[3];
+//        Integer utid = (Integer) row[4];
+//        String username = (String) row[5];
+
         BoardResponse.DetailDTO responseDTO = rm.uniqueResult(query, BoardResponse.DetailDTO.class);
         return responseDTO;
+
 
     }
 }
