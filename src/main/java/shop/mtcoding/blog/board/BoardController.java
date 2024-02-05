@@ -20,6 +20,13 @@ public class BoardController {
     private final HttpSession session;
     private final BoardRepository boardRepository;
 
+    @GetMapping("/search")
+    public String search(HttpServletRequest request, @RequestParam("title") String title){
+        List<Board> boardList = boardRepository.findAll(title);
+        request.setAttribute("boardList",boardList);
+        return "index";
+    }
+
     // http://localhost:8080?page=0
     @GetMapping({ "/", "/board" })
     public String index(HttpServletRequest request, @RequestParam(defaultValue = "0") int page) {
@@ -79,4 +86,7 @@ public class BoardController {
         boardRepository.save(saveDTO);
         return "redirect:/";
     }
+
+
+
 }

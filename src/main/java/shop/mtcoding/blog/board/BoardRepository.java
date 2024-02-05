@@ -27,6 +27,15 @@ public class BoardRepository {
         return totalCount;
     }
 
+    public List<Board> findAll(String title){
+        Query query = em.createNativeQuery("select * from board_tb where title like ? order by id desc",Board.class);
+        query.setParameter(1,"%"+title+"%");
+
+        List<Board> boardList = query.getResultList();
+
+        return boardList;
+    }
+
     public List<Board> findAll(int page){
         int value = Constant.PAGING_COUNT *page;
         Query query = em.createNativeQuery("select * from board_tb order by id desc limit ?,?", Board.class);
