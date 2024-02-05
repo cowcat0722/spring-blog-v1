@@ -25,6 +25,7 @@ public class UserController {
     private final HttpSession session;
 
     // 로그인만 예외로 POST한다
+    // 조회인데 POST인 이유는 민감한 정보는 Body로 실어서 보내기 때문
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO requestDTO) {
         // 1. 유효성 검사

@@ -32,13 +32,14 @@ public class BoardRepository {
         return totalCount;
     }
 
-    public void findById(int id) {
+    public BoardResponse.DetailDTO findById(int id) {
         //Entity가 아닌 것은 JPA가 파싱안해준다. (Join을 해서 Entity가 아님)
-        Query query = em.createNativeQuery("select bt.id, bt.content, bt.title, bt.created_at, bt.user_id, ut.username " +
+        Query query = em.createNativeQuery("select bt.id, bt.title, bt.content , bt.created_at, bt.user_id, ut.username " +
                 "from board_tb bt inner join user_tb ut on bt.user_id = ut.id where bt.id=?");
         query.setParameter(1,id);
 
         JpaResultMapper rm = new JpaResultMapper();
-        DetailDTO detailDTO = rm.uniqueResult(query. DetailDTO.class);
+        BoardResponse.DetailDTO responseDTO = rm.uniqueResult(query, BoardResponse.DetailDTO.class);
+        return responseDTO;
     }
 }
