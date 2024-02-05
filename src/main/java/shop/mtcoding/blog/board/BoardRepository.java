@@ -2,10 +2,13 @@ package shop.mtcoding.blog.board;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.Constant;
+import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @Repository
 public class BoardRepository {
     private final EntityManager em;
+    private final HttpSession session;
 
     public int count(){
         Query query = em.createNativeQuery("select count(*) from board_tb");
@@ -55,7 +59,19 @@ public class BoardRepository {
 
         BoardResponse.DetailDTO responseDTO = rm.uniqueResult(query, BoardResponse.DetailDTO.class);
         return responseDTO;
-
-
     }
+
+    @Transactional
+    public void save(BoardResponse.SaveDTO saveDTO){
+        String userId = (String) session.getAttribute("USER_ID");
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        Query query = em.createNativeQuery("insert into board_tb(title,content,user_id) values (?,?,?)");
+
+        query.setParameter(1,saveDTO.getTitle());
+        query.setParameter(2,saveDTO.getContent());
+        query.setParameter(3,sessionUser.getId());
+
+        query.executeUpdate();
+    }
+
 }

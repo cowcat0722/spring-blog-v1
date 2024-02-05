@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.mtcoding.blog._core.PagingUtil;
 import shop.mtcoding.blog.user.User;
@@ -53,6 +54,7 @@ public class BoardController {
         BoardResponse.DetailDTO responseDTO = boardRepository.findById(id);
         request.setAttribute("board",responseDTO);
 
+
         // 1. 해당 페이지의 주인여부
         boolean owner = false;
 
@@ -70,5 +72,11 @@ public class BoardController {
         request.setAttribute("owner",owner);
 
         return "board/detail";
+    }
+
+    @PostMapping("/board/save")
+    public String save(BoardResponse.SaveDTO saveDTO) {
+        boardRepository.save(saveDTO);
+        return "redirect:/";
     }
 }

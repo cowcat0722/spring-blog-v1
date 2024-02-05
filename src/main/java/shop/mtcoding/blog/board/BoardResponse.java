@@ -17,6 +17,14 @@ public class BoardResponse {
         private Timestamp createdAt;
         private Integer userId;
         private String username;
+    }
 
+    @AllArgsConstructor
+    @Data
+    public static class SaveDTO{
+        private Integer id;
+        private String title;
+        private String content;
+        private Integer userId;
     }
 }
