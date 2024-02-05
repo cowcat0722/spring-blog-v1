@@ -16,7 +16,7 @@ public class User {
     @Column(unique = true) // username을 unique로
     private String username;
 
-    @Column(length = 60, nullable = false) // 60자 까지만, null일수 없다
+    @Column(length = 60, nullable = false) // 60자 까지만, null일수 없다 -> null이 안먹히는 이유는 공백이 입력되기때문
     private String password;
     private String email;
 
