@@ -16,4 +16,5 @@ public class BoardRequest {
     public static class DeleteDTO{
         private int id;
     }
+
 }

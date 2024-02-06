@@ -18,6 +18,15 @@ public class BoardRepository {
     private final HttpSession session;
 
     @Transactional
+    public void update(int boardId, BoardRequest.SaveDTO requestDTO){
+        Query query = em.createNativeQuery("update board_tb set title=?, content=? where id = ?");
+        query.setParameter(1,requestDTO.getTitle());
+        query.setParameter(2,requestDTO.getContent());
+        query.setParameter(3,boardId);
+        query.executeUpdate();
+    }
+
+    @Transactional
     public void delete(int boardId) {
         Query query = em.createNativeQuery("delete from board_tb where id = ?");
         query.setParameter(1, boardId);
@@ -68,6 +77,7 @@ public class BoardRepository {
         return boardList;
     }
 
+
     public BoardResponse.DetailDTO findById(int id) {
         // Entity가 아닌 것은 JPA가 파싱안해준다. (Join을 해서 Entity가 아님)
         Query query = em.createNativeQuery("select bt.id, bt.title, bt.content, bt.created_at, bt.user_id, ut.username from " +
@@ -102,5 +112,6 @@ public class BoardRepository {
 
         query.executeUpdate();
     }
+
 
 }
