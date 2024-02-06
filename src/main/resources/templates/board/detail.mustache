@@ -6,7 +6,8 @@
         <!-- 수정삭제버튼 -->
         <div class="d-flex justify-content-end">
             <button class="btn btn-warning me-1">수정</button>
-            <form action="/board/delete" method="post">
+            <form action="/board/{{id}}/delete" method="post">
+                <input type="hidden" name="_method" value="DELETE"/>
                 <button class="btn btn-danger">삭제</button>
             </form>
         </div>

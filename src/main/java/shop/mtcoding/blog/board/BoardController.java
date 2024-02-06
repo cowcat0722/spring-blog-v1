@@ -63,7 +63,6 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id, HttpServletRequest request) {
-
         BoardResponse.DetailDTO responseDTO = boardRepository.findById(id);
         request.setAttribute("board",responseDTO);
 
@@ -87,17 +86,30 @@ public class BoardController {
         return "board/detail";
     }
 
+    @PostMapping("/board/{id}/delete")
+    public String delete(BoardRequest.DeleteDTO deleteDTO){
+        boardRepository.delete(deleteDTO.getId());
+        return "redirect:/board";
+    }
+
     @PostMapping("/board/save")
-    public String save(BoardRequest.SaveDTO saveDTO) {
-        boardRepository.save(saveDTO);
+    public String save(BoardRequest.SaveDTO saveDTO, HttpServletRequest request) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser == null){
+            return "redirect:/loginForm";
+        }
+
+        if(saveDTO.getTitle().length()>30){
+            request.setAttribute("status",400);
+            request.setAttribute("msg","title의 길이가 30자를 초과해서는 안되요");
+            return "error/40x"; // BadRequest
+        }
+
+        boardRepository.save(saveDTO,sessionUser.getId());
         return "redirect:/";
     }
 
-    @PostMapping("/board/delete")
-    public String delete(BoardResponse.DetailDTO detailDTO){
-        boardRepository.delete(detailDTO);
-        return "redirect:/board";
-    }
+
 
 
 

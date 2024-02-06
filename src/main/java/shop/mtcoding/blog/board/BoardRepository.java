@@ -8,7 +8,6 @@ import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.Constant;
-import shop.mtcoding.blog.user.User;
 
 import java.util.List;
 
@@ -19,11 +18,10 @@ public class BoardRepository {
     private final HttpSession session;
 
     @Transactional
-    public void delete(BoardResponse.DetailDTO detailDTO) {
-        System.out.println(detailDTO);
-//        Query query = em.createNativeQuery("delete from board_tb where id = ?");
-//        query.setParameter(1, detailDTO.getId());
-//        query.executeUpdate();
+    public void delete(int boardId) {
+        Query query = em.createNativeQuery("delete from board_tb where id = ?");
+        query.setParameter(1, boardId);
+        query.executeUpdate();
 
     }
 
@@ -91,13 +89,13 @@ public class BoardRepository {
     }
 
     @Transactional
-    public void save(BoardRequest.SaveDTO saveDTO) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
+    public void save(BoardRequest.SaveDTO saveDTO, int userId) {
+
         Query query = em.createNativeQuery("insert into board_tb(title,content,user_id) values (?,?,?)");
 
         query.setParameter(1, saveDTO.getTitle());
         query.setParameter(2, saveDTO.getContent());
-        query.setParameter(3, sessionUser.getId());
+        query.setParameter(3, userId);
 
         query.executeUpdate();
     }

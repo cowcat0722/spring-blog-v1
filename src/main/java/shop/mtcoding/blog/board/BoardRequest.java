@@ -10,4 +10,10 @@ public class BoardRequest {
         private String title;
         private String content;
     }
+
+    @AllArgsConstructor
+    @Data
+    public static class DeleteDTO{
+        private int id;
+    }
 }
