@@ -50,6 +50,14 @@ public class BoardController {
 
     @GetMapping("/board/saveForm")
     public String saveForm() {
+        // session 영역에 sessionUser 키값에 user 객체 있는지 체크
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        // 값이 null 이면 로그인 페이지로 리다이렉션
+        if(sessionUser == null){
+            return "redirect:/loginForm";
+        }
+        // 값이 null 이 아니면, /board/saveForm 으로 이동
         return "board/saveForm";
     }
 
@@ -80,10 +88,18 @@ public class BoardController {
     }
 
     @PostMapping("/board/save")
-    public String save(BoardResponse.DetailDTO detailDTO) {
-        boardRepository.save(detailDTO);
+    public String save(BoardResponse.SaveDTO saveDTO) {
+        boardRepository.save(saveDTO);
         return "redirect:/";
     }
+
+    @PostMapping("/board/delete")
+    public String delete(BoardResponse.DetailDTO detailDTO){
+        boardRepository.delete(detailDTO);
+        return "redirect:/board";
+    }
+
+
 
 
 }
