@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.PagingUtil;
 import shop.mtcoding.blog.user.User;
 
@@ -83,11 +80,10 @@ public class BoardController {
     }
 
     @PostMapping("/board/save")
-    public String save(BoardResponse.SaveDTO saveDTO) {
-        boardRepository.save(saveDTO);
+    public String save(BoardResponse.DetailDTO detailDTO) {
+        boardRepository.save(detailDTO);
         return "redirect:/";
     }
-
 
 
 }

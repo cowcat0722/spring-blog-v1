@@ -18,6 +18,13 @@ public class BoardRepository {
     private final EntityManager em;
     private final HttpSession session;
 
+    public void delete(BoardResponse.DetailDTO detailDTO){
+        Query query = em.createNativeQuery("delete from board_tb where id = ?");
+        query.setParameter(1,detailDTO.getId());
+
+        query.executeUpdate();
+    }
+
     public int count(){
         Query query = em.createNativeQuery("select count(*) from board_tb");
 
@@ -82,12 +89,12 @@ public class BoardRepository {
     }
 
     @Transactional
-    public void save(BoardResponse.SaveDTO saveDTO){
+    public void save(BoardResponse.DetailDTO detailDTO){
         User sessionUser = (User) session.getAttribute("sessionUser");
         Query query = em.createNativeQuery("insert into board_tb(title,content,user_id) values (?,?,?)");
 
-        query.setParameter(1,saveDTO.getTitle());
-        query.setParameter(2,saveDTO.getContent());
+        query.setParameter(1,detailDTO.getTitle());
+        query.setParameter(2,detailDTO.getContent());
         query.setParameter(3,sessionUser.getId());
 
         query.executeUpdate();

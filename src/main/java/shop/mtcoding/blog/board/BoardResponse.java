@@ -19,12 +19,13 @@ public class BoardResponse {
         private String username;
     }
 
-    @AllArgsConstructor
-    @Data
-    public static class SaveDTO{
-        private Integer id;
-        private String title;
-        private String content;
-        private Integer userId;
-    }
+    // 만들필요 없었던거 같음
+//    @AllArgsConstructor
+//    @Data
+//    public static class SaveDTO{
+//        private Integer id;
+//        private String title;
+//        private String content;
+//        private Integer userId;
+//    }
 }
