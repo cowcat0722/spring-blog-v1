@@ -18,9 +18,26 @@ public class BoardController {
     private final BoardRepository boardRepository;
 
     @GetMapping("/search")
-    public String search(HttpServletRequest request, @RequestParam("title") String title){
-        List<Board> boardList = boardRepository.findAll(title);
+    public String search(HttpServletRequest request, @RequestParam(value = "title") String title, @RequestParam(defaultValue = "0") int page){
+        List<Board> boardList = boardRepository.findAll(title,page);
         request.setAttribute("boardList",boardList);
+
+        request.setAttribute("search",title);
+//        boolean searchThing = true;
+//        request.setAttribute("search",searchThing);
+
+        int currentPage = page;
+        int nextPage = currentPage+1;
+        int prevPage = currentPage-1;
+        request.setAttribute("nextPage",nextPage);
+        request.setAttribute("prevPage",prevPage);
+
+        boolean first = PagingUtil.isFirst(currentPage);
+        int totalCount = boardRepository.count(title);
+        boolean last = PagingUtil.isLast(currentPage,totalCount);
+
+        request.setAttribute("first",first);
+        request.setAttribute("last",last);
 
         return "index";
     }
@@ -31,6 +48,12 @@ public class BoardController {
         // 위임만 하면 끝
         List<Board> boardList = boardRepository.findAll(page);
         request.setAttribute("boardList",boardList);
+
+        String title ="";
+        request.setAttribute("search",title);
+
+//        boolean searchThing = false;
+//        request.setAttribute("search",searchThing);
 
         int currentPage = page;
         int nextPage = currentPage+1;

@@ -35,18 +35,21 @@ public class BoardRepository {
     }
 
     // 페이징 과정
-//    public int searchCount(String title){
-//        Query query = em.createNativeQuery("select count(*) from board_tb where title like ? ");
-//        query.setParameter(1,"%"+title+"%");
-//
-//        int searchCount = ((Number) query.getSingleResult()).intValue();
-//
-//        return searchCount;
-//    }
+    public int count(String title){
+        Query query = em.createNativeQuery("select count(*) from board_tb where title like ? ");
+        query.setParameter(1,"%"+title+"%");
 
-    public List<Board> findAll(String title) {
-        Query query = em.createNativeQuery("select * from board_tb where title like ? order by id desc", Board.class);
+        int searchCount = ((Number) query.getSingleResult()).intValue();
+
+        return searchCount;
+    }
+
+    public List<Board> findAll(String title, int page) {
+        int value = Constant.PAGING_COUNT * page;
+        Query query = em.createNativeQuery("select * from board_tb where title like ? order by id desc limit ?,?", Board.class);
         query.setParameter(1, "%" + title + "%");
+        query.setParameter(2, value);
+        query.setParameter(3, Constant.PAGING_COUNT);
 
         List<Board> boardList = query.getResultList();
 

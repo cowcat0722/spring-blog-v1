@@ -19,10 +19,10 @@
     {{/boardList}}
 
     <ul class="pagination d-flex justify-content-center">
-        <li class="page-item {{#first}}disabled{{/first}}"><a class="page-link" href="?page=">Previous</a>
-        </li>
-        <li class="page-item {{#last}}disabled{{/last}}"><a class="page-link" href="?page=">Next</a></li>
+        <li class="page-item {{#first}}disabled{{/first}}"><a class="page-link" href="?title={{search}}&page={{prevPage}}">Previous</a></li>
+        <li class="page-item {{#last}}disabled{{/last}}"><a class="page-link" href="?title={{search}}&page={{nextPage}}">Next</a></li>
     </ul>
+
 
 </div>
 
