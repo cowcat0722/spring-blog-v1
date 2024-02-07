@@ -152,9 +152,8 @@ public class BoardController {
             return "error/403";
         }
 
-        // 3. 핵심 로직ㅂ`
-        int boardId = board.getId();
-        boardRepository.update(boardId, requestDTO);
+        // 3. 핵심 로직
+        boardRepository.update(board.getId(), requestDTO);
         return "redirect:/board/{id}";
     }
 
