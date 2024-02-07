@@ -178,4 +178,11 @@ public class BoardController {
 
         return "board/updateForm";
     }
+
+    @PostMapping("board/{3}/replySave")
+    public String replySave(){
+
+
+        return "redirect:/board/{id}";
+    }
 }
