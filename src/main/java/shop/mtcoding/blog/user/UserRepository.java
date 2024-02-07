@@ -68,4 +68,8 @@ public class UserRepository {
 
         query.executeUpdate();
     }
+
+//    public List<Object> findById(int id) {
+//
+//    }
 }

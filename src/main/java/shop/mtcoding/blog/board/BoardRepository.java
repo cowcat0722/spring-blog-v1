@@ -2,7 +2,6 @@ package shop.mtcoding.blog.board;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Repository;
@@ -15,7 +14,6 @@ import java.util.List;
 @Repository
 public class BoardRepository {
     private final EntityManager em;
-    private final HttpSession session;
 
     @Transactional
     public void update(int boardId, BoardRequest.UpdateDTO requestDTO){
@@ -108,6 +106,18 @@ public class BoardRepository {
         return responseDTO;
     }
 
+    public ReplyResponse.ReplyDetailDTO findReplyByIdWithUser(int boardId){
+        Query query = em.createNativeQuery("SELECT u.username,r.comment FROM reply_tb r JOIN user_tb u ON r.user_id = u.id WHERE r.id = ?");
+        query.setParameter(1,boardId);
+
+//        Object[] row = (Object[]) query.getSingleResult();
+
+        JpaResultMapper rm = new JpaResultMapper();
+
+        ReplyResponse.ReplyDetailDTO replyDetailDTO = rm.uniqueResult(query, ReplyResponse.ReplyDetailDTO.class);
+        return replyDetailDTO;
+    }
+
     @Transactional
     public void save(BoardRequest.SaveDTO saveDTO, int userId) {
 
@@ -120,5 +130,14 @@ public class BoardRepository {
         query.executeUpdate();
     }
 
+    @Transactional
+    public void replySave(int boardId,int userId,ReplyResponse.ReplyDTO responseDTO){
+        Query query = em.createNativeQuery("insert into reply_tb(board_id,user_id,comment,created_at) values (?,?,?,now())");
+        query.setParameter(1,boardId);
+        query.setParameter(2,userId);
+        query.setParameter(3,responseDTO.getComment());
+
+        query.executeUpdate();
+    }
 
 }

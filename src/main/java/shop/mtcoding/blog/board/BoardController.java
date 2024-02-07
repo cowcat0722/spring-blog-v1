@@ -84,11 +84,25 @@ public class BoardController {
         return "board/saveForm";
     }
 
+    @PostMapping("board/{id}/replySave")
+    public String replySave(@PathVariable int id, ReplyResponse.ReplyDTO responseDTO, HttpServletRequest request){
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        Board board = boardRepository.findById(id);
+
+        // DB에 댓글 등록
+        boardRepository.replySave(board.getId(),sessionUser.getId(),responseDTO);
+
+        return "redirect:/board/{id}";
+    }
+
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id, HttpServletRequest request) {
         BoardResponse.DetailDTO responseDTO = boardRepository.findByIdWithUser(id);
         request.setAttribute("board",responseDTO);
-
+        // 화면상에 댓글 뿌리기
+        Board board = boardRepository.findById(id);
+        ReplyResponse.ReplyDetailDTO replyDetailDTO = boardRepository.findReplyByIdWithUser(board.getId());
+        request.setAttribute("reply", replyDetailDTO);
 
         // 1. 해당 페이지의 주인여부
         boolean owner = false;
@@ -179,10 +193,4 @@ public class BoardController {
         return "board/updateForm";
     }
 
-    @PostMapping("board/{3}/replySave")
-    public String replySave(){
-
-
-        return "redirect:/board/{id}";
-    }
 }

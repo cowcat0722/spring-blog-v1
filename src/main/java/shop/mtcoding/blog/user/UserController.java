@@ -83,6 +83,8 @@ public class UserController {
 
     @GetMapping("/user/updateForm")
     public String updateForm() {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        session.setAttribute("User",sessionUser);
         return "user/updateForm";
     }
 
@@ -96,6 +98,8 @@ public class UserController {
 
         // 핵심 로직
         userRepository.update(requestDTO, sessionUser.getId());
+//        User sessionUser2 = (User) session.getAttribute("sessionUser");
+//        session.setAttribute("sessionUser",userRepository.findById(sessionUser.getId()).get());
 
         return "redirect:/";
     }
