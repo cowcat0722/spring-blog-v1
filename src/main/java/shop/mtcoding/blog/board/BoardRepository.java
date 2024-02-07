@@ -18,7 +18,7 @@ public class BoardRepository {
     private final HttpSession session;
 
     @Transactional
-    public void update(int boardId, BoardRequest.SaveDTO requestDTO){
+    public void update(int boardId, BoardRequest.UpdateDTO requestDTO){
         Query query = em.createNativeQuery("update board_tb set title=?, content=? where id = ?");
         query.setParameter(1,requestDTO.getTitle());
         query.setParameter(2,requestDTO.getContent());

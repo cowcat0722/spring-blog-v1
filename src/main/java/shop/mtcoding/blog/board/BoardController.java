@@ -140,8 +140,19 @@ public class BoardController {
     }
 
     @PostMapping("/board/{id}/update")
-    public String update(@PathVariable int id, BoardRequest.SaveDTO requestDTO){
+    public String update(@PathVariable int id, BoardRequest.UpdateDTO requestDTO){
+        // 1. 인증 체크
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser == null){
+            return "redirect:/loginForm";
+        }
+        // 2. 권한 체크
         Board board = boardRepository.findById(id);
+        if (sessionUser.getId() != board.getUserId()){
+            return "error/403";
+        }
+
+        // 3. 핵심 로직ㅂ`
         int boardId = board.getId();
         boardRepository.update(boardId, requestDTO);
         return "redirect:/board/{id}";
