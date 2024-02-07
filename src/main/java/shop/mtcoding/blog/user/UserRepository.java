@@ -59,4 +59,13 @@ public class UserRepository {
             return null;
         }
     }
+
+    @Transactional
+    public void update(UserRequest.UpdateDTO requestDTO, int id) {
+        Query query = em.createNativeQuery("update user_tb set password = ? where id = ?");
+        query.setParameter(1,requestDTO.getPassword());
+        query.setParameter(2, id);
+
+        query.executeUpdate();
+    }
 }

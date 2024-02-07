@@ -86,6 +86,20 @@ public class UserController {
         return "user/updateForm";
     }
 
+    @PostMapping("/user/update")
+    public String update(UserRequest.UpdateDTO requestDTO) {
+        // 인증 체크, 권한 체크
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser == null){
+            return "redirect:/loginForm";
+        }
+
+        // 핵심 로직
+        userRepository.update(requestDTO, sessionUser.getId());
+
+        return "redirect:/";
+    }
+
     @GetMapping("/logout")
     public String logout() {
         session.invalidate();
