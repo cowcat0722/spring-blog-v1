@@ -6,7 +6,7 @@
     <div class="card">
         <div class="card-header"><b>글쓰기 수정 화면입니다</b></div>
         <div class="card-body">
-            <form action="/board/{id}/update" method="post" enctype="application/x-www-form-urlencoded">
+            <form action="/board/{{board.id}}/update" method="post" enctype="application/x-www-form-urlencoded">
                 <div class="mb-3">
                     <input type="text" class="form-control" value="{{board.title}}" name="title">
                 </div>

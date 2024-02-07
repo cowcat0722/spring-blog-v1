@@ -86,7 +86,7 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id, HttpServletRequest request) {
-        BoardResponse.DetailDTO responseDTO = boardRepository.findById(id);
+        BoardResponse.DetailDTO responseDTO = boardRepository.findByIdWithUser(id);
         request.setAttribute("board",responseDTO);
 
 
@@ -111,6 +111,12 @@ public class BoardController {
 
     @PostMapping("/board/{id}/delete")
     public String delete(BoardRequest.DeleteDTO deleteDTO){
+        // 인증 체크
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser == null){
+            return "redirect:/loginForm";
+        }
+
         boardRepository.delete(deleteDTO.getId());
         return "redirect:/board";
     }
@@ -135,15 +141,30 @@ public class BoardController {
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable int id, BoardRequest.SaveDTO requestDTO){
-
-        boardRepository.update(id,requestDTO);
-        return "redirect:/board/"+id;
+        Board board = boardRepository.findById(id);
+        int boardId = board.getId();
+        boardRepository.update(boardId, requestDTO);
+        return "redirect:/board/{id}";
     }
 
     @GetMapping("/board/{id}/updateForm")
     public String updateForm(@PathVariable int id, HttpServletRequest request){
-        BoardResponse.DetailDTO responseDTO = boardRepository.findById(id);
-        request.setAttribute("board",responseDTO);
+        // 인증 체크
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        if(sessionUser == null){
+            return "redirect:/loginForm";
+        }
+
+        // 모델 위임 (id로 board를 조회)
+        Board board = boardRepository.findById(id);
+
+        // 권한 체크
+        if (sessionUser.getId() != board.getUserId()){
+            return "error/403";
+        }
+
+        // 3. 가방에 담기
+        request.setAttribute("board",board);
 
         return "board/updateForm";
     }

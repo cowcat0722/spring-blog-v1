@@ -77,8 +77,15 @@ public class BoardRepository {
         return boardList;
     }
 
+    public Board findById(int id){
+        Query query = em.createNativeQuery("select * from board_tb where id = ?", Board.class);
+        query.setParameter(1, id);
 
-    public BoardResponse.DetailDTO findById(int id) {
+        Board board = (Board) query.getSingleResult();
+        return board;
+    }
+
+    public BoardResponse.DetailDTO findByIdWithUser(int id) {
         // Entity가 아닌 것은 JPA가 파싱안해준다. (Join을 해서 Entity가 아님)
         Query query = em.createNativeQuery("select bt.id, bt.title, bt.content, bt.created_at, bt.user_id, ut.username from " +
                 "board_tb bt inner join user_tb ut " +
