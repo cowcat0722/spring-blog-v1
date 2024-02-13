@@ -1,10 +1,13 @@
 package shop.mtcoding.blog.user;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog._core.config.security.MyLoginUser;
 
 /**
  * 컨트롤러
@@ -82,9 +85,9 @@ public class UserController {
     }
 
     @GetMapping("/user/updateForm")
-    public String updateForm() {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        session.setAttribute("User",sessionUser);
+    public String updateForm(HttpServletRequest request, @AuthenticationPrincipal MyLoginUser myLoginUser) {
+        User user = userRepository.findByUsername(myLoginUser.getUsername());
+        request.setAttribute("user",user);
         return "user/updateForm";
     }
 

@@ -26,7 +26,7 @@ public class SecurityConfig {
         http.csrf(c -> c.disable());
 
         http.authorizeHttpRequests(a -> {
-            a.requestMatchers("/user/updateForm", "/board/**").authenticated().anyRequest().permitAll();
+            a.requestMatchers("/user/**", "/board/**").authenticated().anyRequest().permitAll();
         });
 
         // 세큐리티 로그인 페이지를 내가 만든 페이지로 설정
