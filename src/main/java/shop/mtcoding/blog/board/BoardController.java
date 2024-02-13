@@ -101,8 +101,8 @@ public class BoardController {
         request.setAttribute("board",responseDTO);
         // 화면상에 댓글 뿌리기
         Board board = boardRepository.findById(id);
-        ReplyResponse.ReplyDetailDTO replyDetailDTO = boardRepository.findReplyByIdWithUser(board.getId());
-        request.setAttribute("reply", replyDetailDTO);
+        List<ReplyResponse.ReplyDetailDTO> replyDetailDTOList = boardRepository.findReplyByIdWithUser(board.getId());
+        request.setAttribute("reply", replyDetailDTOList);
 
         // 1. 해당 페이지의 주인여부
         boolean owner = false;
