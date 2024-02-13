@@ -1,4 +1,6 @@
-package shop.mtcoding.blog._core;
+package shop.mtcoding.blog._core.util;
+
+import shop.mtcoding.blog._core.Constant;
 
 public class PagingUtil {
 

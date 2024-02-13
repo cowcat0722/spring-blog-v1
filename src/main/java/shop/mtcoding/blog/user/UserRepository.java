@@ -39,7 +39,6 @@ public class UserRepository {
         query.setParameter(1,requestDTO.getUsername());
         query.setParameter(2,requestDTO.getPassword());
 
-
         try {
             User user = (User) query.getSingleResult();
             return user;
