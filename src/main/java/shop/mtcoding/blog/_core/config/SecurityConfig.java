@@ -13,7 +13,7 @@ public class SecurityConfig {
 
     @Bean
     public BCryptPasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // IoC 등록, 시큐리티가 로그인할때 어떤 해시로 비교해야하는지 알게됨
     }
 
     @Bean

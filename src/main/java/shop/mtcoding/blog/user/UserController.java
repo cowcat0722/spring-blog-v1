@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,7 @@ public class UserController {
     private final UserRepository userRepository;
     // IoC 컨테이너에 세션에 접근할 수 있는 변수가 들어가 있음
     private final HttpSession session;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     // 로그인만 예외로 POST한다
 //    @PostMapping("/login")
@@ -52,7 +54,11 @@ public class UserController {
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO requestDTO) {
-        System.out.println(requestDTO);
+
+        String rawPassword = requestDTO.getPassword();
+        String encPassword = passwordEncoder.encode(rawPassword);
+
+        requestDTO.setPassword(encPassword);
 
         // 1. 유효성 검사
         if (requestDTO.getUsername().length() < 3) {
@@ -67,8 +73,6 @@ public class UserController {
         }else{
             return "error/400";
         }
-
-
 
         // 4. 응답하기
         return "redirect:/loginForm";
@@ -92,15 +96,17 @@ public class UserController {
     }
 
     @PostMapping("/user/update")
-    public String update(UserRequest.UpdateDTO requestDTO) {
+    public String update(UserRequest.UpdateDTO requestDTO, @AuthenticationPrincipal MyLoginUser myLoginUser) {
         // 인증 체크, 권한 체크
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        if(sessionUser == null){
-            return "redirect:/loginForm";
-        }
+//        User sessionUser = (User) session.getAttribute("sessionUser");
 
+        String rawPassword = requestDTO.getPassword();
+        String encPassword = passwordEncoder.encode(rawPassword);
+
+        requestDTO.setPassword(encPassword);
         // 핵심 로직
-        userRepository.update(requestDTO, sessionUser.getId());
+        userRepository.update(requestDTO, myLoginUser.getUser().getId());
+
 //        User sessionUser2 = (User) session.getAttribute("sessionUser");
 //        session.setAttribute("sessionUser",userRepository.findById(sessionUser.getId()).get());
 
