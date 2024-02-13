@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration // 컴포넌트 스캔
 public class SecurityConfig {
@@ -16,8 +17,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebSecurityCustomizer ignore(){
-        return w -> w.ignoring().requestMatchers("/board/*", "/static/**", "/h2-console/**");
+    public WebSecurityCustomizer ignore(){ // 정적자원 security filter에서 제외시키기
+        return w -> w.ignoring().requestMatchers("/static/**", "/h2-console/**");
     }
 
     @Bean
@@ -26,7 +27,8 @@ public class SecurityConfig {
         http.csrf(c -> c.disable());
 
         http.authorizeHttpRequests(a -> {
-            a.requestMatchers("/user/**", "/board/**").authenticated().anyRequest().permitAll();
+            a.requestMatchers(RegexRequestMatcher.regexMatcher("/board/\\d+")).permitAll()
+                    .requestMatchers("/user/**", "/board/**").authenticated().anyRequest().permitAll();
         });
 
         // 세큐리티 로그인 페이지를 내가 만든 페이지로 설정
