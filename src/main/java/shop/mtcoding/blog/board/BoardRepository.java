@@ -106,7 +106,7 @@ public class BoardRepository {
         return responseDTO;
     }
 
-    public ReplyResponse.ReplyDetailDTO findReplyByIdWithUser(int boardId){
+    public List<ReplyResponse.ReplyDetailDTO> findReplyByIdWithUser(int boardId){
         Query query = em.createNativeQuery("SELECT u.username,r.comment FROM reply_tb r JOIN user_tb u ON r.user_id = u.id WHERE r.id = ?");
         query.setParameter(1,boardId);
 
@@ -114,7 +114,7 @@ public class BoardRepository {
 
         JpaResultMapper rm = new JpaResultMapper();
 
-        ReplyResponse.ReplyDetailDTO replyDetailDTO = rm.uniqueResult(query, ReplyResponse.ReplyDetailDTO.class);
+        List<ReplyResponse.ReplyDetailDTO> replyDetailDTO = rm.list(query, ReplyResponse.ReplyDetailDTO.class);
         return replyDetailDTO;
     }
 
