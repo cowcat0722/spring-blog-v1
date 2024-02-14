@@ -24,7 +24,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        http.csrf(c -> c.disable());
+        http.csrf(c -> c.disable()); // POSTMAN으로 요청을
 
         http.authorizeHttpRequests(a -> {
             a.requestMatchers(RegexRequestMatcher.regexMatcher("/board/\\d+")).permitAll()
