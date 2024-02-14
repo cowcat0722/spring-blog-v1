@@ -1,0 +1,29 @@
+package shop.mtcoding.blog.reply;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Repository
+public class ReplyRepository {
+    private final EntityManager em;
+    private final HttpSession session;
+
+    @Transactional
+    public void save(ReplyRequest.WriteDTO requestDTO, int userId) {
+
+        Query query = em.createNativeQuery("insert into board_tb(comment,board_id,user_id,created_at) values (?,?,?,now())");
+
+        query.setParameter(1, requestDTO.getComment());
+        query.setParameter(2, requestDTO.getBoardId());
+        query.setParameter(3, userId);
+
+        query.executeUpdate();
+    }
+
+
+}
