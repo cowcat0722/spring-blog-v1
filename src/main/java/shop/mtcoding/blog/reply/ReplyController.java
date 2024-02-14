@@ -12,6 +12,7 @@ import shop.mtcoding.blog.user.User;
 public class ReplyController {
 
     private final HttpSession session;
+    private final ReplyRepository replyRepository; // DI 의존성 주입
 
     @PostMapping("/reply/save")
     public String write(ReplyRequest.WriteDTO requestDTO){
@@ -26,6 +27,9 @@ public class ReplyController {
         // 유효성 검사(내가하기)
 //        if(requestDTO.getComment())
 
-        return "redirect:/board/{id}";
+        // 핵심 코드
+        replyRepository.save(requestDTO,sessionUser.getId());
+
+        return "redirect:/board/"+requestDTO.getBoardId();
     }
 }
