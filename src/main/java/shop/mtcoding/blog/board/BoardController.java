@@ -20,39 +20,51 @@ public class BoardController {
     private final BoardRepository boardRepository;
     private final ReplyRepository replyRepository;
 
-    @GetMapping("/search")
-    public String search(HttpServletRequest request, @RequestParam(value = "title") String title, @RequestParam(defaultValue = "0") int page){
-        List<Board> boardList = boardRepository.findAll(title,page);
-        request.setAttribute("boardList",boardList);
 
-        request.setAttribute("search",title);
-//        boolean searchThing = true;
-//        request.setAttribute("search",searchThing);
 
-        int currentPage = page;
-        int nextPage = currentPage+1;
-        int prevPage = currentPage-1;
-        request.setAttribute("nextPage",nextPage);
-        request.setAttribute("prevPage",prevPage);
-
-        boolean first = PagingUtil.isFirst(currentPage);
-        int totalCount = boardRepository.count(title);
-        boolean last = PagingUtil.isLast(currentPage,totalCount);
-
-        request.setAttribute("first",first);
-        request.setAttribute("last",last);
-
-        return "index";
-    }
+//    @GetMapping("/search")
+//    public String search(HttpServletRequest request, @RequestParam(value = "title") String title, @RequestParam(defaultValue = "0") int page){
+//        List<Board> boardList = boardRepository.findAll(title,page);
+//        request.setAttribute("boardList",boardList);
+//
+//        request.setAttribute("search",title);
+//
+//
+//        int currentPage = page;
+//        int nextPage = currentPage+1;
+//        int prevPage = currentPage-1;
+//        request.setAttribute("nextPage",nextPage);
+//        request.setAttribute("prevPage",prevPage);
+//
+//        boolean first = PagingUtil.isFirst(currentPage);
+//        int totalCount = boardRepository.count(title);
+//        boolean last = PagingUtil.isLast(currentPage,totalCount);
+//
+//        request.setAttribute("first",first);
+//        request.setAttribute("last",last);
+//
+//        return "index";
+//    }
 
     // http://localhost:8080?page=0
     @GetMapping("/")
-    public String index(HttpServletRequest request, @RequestParam(value = "page",defaultValue = "0") Integer page) {
-        // 위임만 하면 끝
-        List<Board> boardList = boardRepository.findAll(page);
+    public String index(
+            HttpServletRequest request,
+            @RequestParam(value = "title", defaultValue = "") String title,
+            @RequestParam(value = "page",defaultValue = "0") Integer page
+    ) {
+        // isEmpty -> Null, 공백
+        // isBlank -> Null, 공백, 스페이스
+        List<Board> boardList = null;
+        int totalCount;
+        if (title.isBlank()){
+            boardList = boardRepository.findAll(page);
+            totalCount = boardRepository.count();
+        }else {
+            boardList = boardRepository.findAll(title,page);
+            totalCount = boardRepository.count(title);
+        }
         request.setAttribute("boardList",boardList);
-
-        String title ="";
         request.setAttribute("search",title);
 
 //        boolean searchThing = false;
@@ -65,7 +77,7 @@ public class BoardController {
         request.setAttribute("prevPage",prevPage);
 
         boolean first = PagingUtil.isFirst(currentPage);
-        int totalCount = boardRepository.count();
+
         boolean last = PagingUtil.isLast(currentPage,totalCount);
 
         request.setAttribute("first",first);
