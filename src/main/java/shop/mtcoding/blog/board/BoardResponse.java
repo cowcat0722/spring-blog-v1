@@ -33,15 +33,15 @@ public class BoardResponse {
     public static class ReplyDTO{
         private Integer Id;
         private Integer userId;
-        private String username;
         private String comment;
+        private String username;
         private Boolean replyOwner; // 게시글 주인 여부 (세션값과 비교)
 
         public ReplyDTO(Object[] ob, User sessionUser) {
             this.Id = (Integer) ob[0];
             this.userId = (Integer) ob[1];
-            this.username = (String) ob[2];
-            this.comment = (String) ob[3];
+            this.comment = (String) ob[2];
+            this.username = (String) ob[3];
 
             if (sessionUser == null){
                 replyOwner = false;

@@ -46,8 +46,8 @@ public class BoardController {
     }
 
     // http://localhost:8080?page=0
-    @GetMapping({ "/", "/board" })
-    public String index(HttpServletRequest request, @RequestParam(defaultValue = "0") int page) {
+    @GetMapping("/")
+    public String index(HttpServletRequest request, @RequestParam(value = "page",defaultValue = "0") Integer page) {
         // 위임만 하면 끝
         List<Board> boardList = boardRepository.findAll(page);
         request.setAttribute("boardList",boardList);
@@ -58,7 +58,7 @@ public class BoardController {
 //        boolean searchThing = false;
 //        request.setAttribute("search",searchThing);
 
-        int currentPage = page;
+        Integer currentPage = page;
         int nextPage = currentPage+1;
         int prevPage = currentPage-1;
         request.setAttribute("nextPage",nextPage);
