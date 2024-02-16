@@ -21,6 +21,6 @@ public class BoardRequest {
     @AllArgsConstructor
     @Data
     public static class DeleteDTO{
-        private int id;
+        private Integer id;
     }
 }

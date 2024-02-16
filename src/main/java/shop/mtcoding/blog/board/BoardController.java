@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import shop.mtcoding.blog._core.PagingUtil;
+import shop.mtcoding.blog.reply.Reply;
+import shop.mtcoding.blog.reply.ReplyRepository;
 import shop.mtcoding.blog.user.User;
 
 import java.util.List;
@@ -16,6 +18,7 @@ public class BoardController {
 
     private final HttpSession session;
     private final BoardRepository boardRepository;
+    private final ReplyRepository replyRepository;
 
     @GetMapping("/search")
     public String search(HttpServletRequest request, @RequestParam(value = "title") String title, @RequestParam(defaultValue = "0") int page){
@@ -86,25 +89,14 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable int id, HttpServletRequest request) {
-        BoardResponse.DetailDTO responseDTO = boardRepository.findByIdWithUser(id);
-        request.setAttribute("board",responseDTO);
-
-
-        // 1. 해당 페이지의 주인여부
-        boolean owner = false;
-
-        // 2. 작성자 userId 확인하기
-        int boardUserId = responseDTO.getUserId();
-
-        // 3. 로그인 여부 체크
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if(sessionUser != null){ // 로그인 했고
-            if(boardUserId == sessionUser.getId()){
-                owner = true;
-            }
-        }
-        
-        request.setAttribute("owner",owner);
+        BoardResponse.DetailDTO boardDTO = boardRepository.findByIdWithUser(id);
+        boardDTO.isBoardOwner(sessionUser);
+
+        List<BoardResponse.ReplyDTO> replyDTOList = replyRepository.findByBoardId(id, sessionUser);
+
+        request.setAttribute("board",boardDTO);
+        request.setAttribute("replyList",replyDTOList);
 
         return "board/detail";
     }
@@ -118,7 +110,7 @@ public class BoardController {
         }
 
         boardRepository.delete(deleteDTO.getId());
-        return "redirect:/board";
+        return "redirect:/";
     }
 
     @PostMapping("/board/save")
@@ -177,5 +169,31 @@ public class BoardController {
         request.setAttribute("board",board);
 
         return "board/updateForm";
+    }
+
+    @PostMapping("/reply/{id}/delete")
+    public String delete(@PathVariable int id){
+        // 인증 검사
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        if (sessionUser == null) {
+            return "redirect:/loginForm";
+        }
+
+        // 권한 검사 (댓글이 없거나, 댓글 주인이거나, 댓글 주인이 아니거나)
+        Reply reply = replyRepository.findById(id);
+
+        if (reply == null){
+            return "error/404";
+        }
+
+        if (reply.getUserId() != sessionUser.getId()){
+            return "error/403";
+        }
+
+        // 핵심 로직
+        replyRepository.deleteById(id);
+
+        return "redirect:/board/"+reply.getBoardId();
     }
 }

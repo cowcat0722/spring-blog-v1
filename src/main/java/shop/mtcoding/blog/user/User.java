@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id // javax의 @Id -> Primary Key
     @GeneratedValue(strategy = GenerationType.IDENTITY) // AutoIncrement
-    private int id;
+    private Integer id;
 
     @Column(unique = true) // username을 unique로
     private String username;

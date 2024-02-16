@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.blog._core.Constant;
@@ -85,28 +84,48 @@ public class BoardRepository {
         return board;
     }
 
-    public BoardResponse.DetailDTO findByIdWithUser(int id) {
-        // Entity가 아닌 것은 JPA가 파싱안해준다. (Join을 해서 Entity가 아님)
-        Query query = em.createNativeQuery("select bt.id, bt.title, bt.content, bt.created_at, bt.user_id, ut.username from " +
-                "board_tb bt inner join user_tb ut " +
-                "on bt.user_id = ut.id where bt.id=?");
-        query.setParameter(1, id);
+    public BoardResponse.DetailDTO findByIdWithUser(int idx) {
+        Query query = em.createNativeQuery("select b.id, b.title, b.content, b.user_id, u.username from board_tb b inner join user_tb u on b.user_id = u.id where b.id = ?");
+        query.setParameter(1, idx);
 
-        JpaResultMapper rm = new JpaResultMapper(); // qlrm
+        Object[] row = (Object[]) query.getSingleResult();
 
-        // 기본기
-//        Object[] row = (Object[]) query.getSingleResult();
-//
-//        Integer bid = (Integer) row[0];
-//        String title = (String) row[1];
-//        String content = (String) row[2];
-//        Timestamp created_at = (Timestamp) row[3];
-//        Integer utid = (Integer) row[4];
-//        String username = (String) row[5];
+        Integer id = (Integer) row[0];
+        String title = (String) row[1];
+        String content = (String) row[2];
+        Integer userId = (Integer) row[3];
+        String username = (String) row[4];
 
-        BoardResponse.DetailDTO responseDTO = rm.uniqueResult(query, BoardResponse.DetailDTO.class);
+        System.out.println("id : " + id);
+        System.out.println("title : " + title);
+        System.out.println("content : " + content);
+        System.out.println("userId : " + userId);
+        System.out.println("username : " + username);
+
+        BoardResponse.DetailDTO responseDTO = new BoardResponse.DetailDTO();
+        responseDTO.setId(id);
+        responseDTO.setTitle(title);
+        responseDTO.setContent(content);
+        responseDTO.setUserId(userId);
+        responseDTO.setUsername(username);
+
         return responseDTO;
     }
+
+//    public BoardResponse.DetailDTO findByIdWithUser(int id) {
+//        // Entity가 아닌 것은 JPA가 파싱안해준다. (Join을 해서 Entity가 아님)
+//        Query query = em.createNativeQuery("select bt.id, bt.title, bt.content, bt.user_id, ut.username from " +
+//                "board_tb bt inner join user_tb ut " +
+//                "on bt.user_id = ut.id where bt.id=?");
+//        query.setParameter(1, id);
+//
+//        JpaResultMapper rm = new JpaResultMapper(); // qlrm
+//
+
+//
+//        BoardResponse.DetailDTO responseDTO = rm.uniqueResult(query, BoardResponse.DetailDTO.class);
+//        return responseDTO;
+//    }
 
     @Transactional
     public void save(BoardRequest.SaveDTO saveDTO, int userId) {

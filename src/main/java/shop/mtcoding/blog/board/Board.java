@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public class Board {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String title;
     private String content;
-    private int userId;
+    private Integer userId;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
