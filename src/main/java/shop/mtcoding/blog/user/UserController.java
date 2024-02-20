@@ -2,6 +2,7 @@ package shop.mtcoding.blog.user;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,20 +31,29 @@ public class UserController {
     public String login(UserRequest.LoginDTO requestDTO) {
         // 1. 유효성 검사
         if (requestDTO.getUsername().length() < 3) {
-            return "error/400";
+            throw new RuntimeException("유저네임의 길이는 3자 이상이어야 합니다.");
         }
 
         // 2. Model 필요 (select * from user_tb where username=? and password=?)
-        User user = userRepository.findByUsernameAndPassword(requestDTO);
+        User user = userRepository.findByUsername(requestDTO.getUsername());
 
-            session.setAttribute("sessionUser",user);
-            return "redirect:/";
+        // password 검증 실패
+        if (!BCrypt.checkpw(requestDTO.getPassword(), user.getPassword())) {
+            throw new RuntimeException("패스워드가 틀렸습니다.");
+        }
+        session.setAttribute("sessionUser", user);
+
+        return "redirect:/";
     }
 
     @PostMapping("/join")
     public String join(UserRequest.JoinDTO requestDTO) {
         // @ResponseBody를 적으면 파일을 반환하는것이 아니라 메시지를 반환한다.
         System.out.println(requestDTO);
+
+        String rawPassword = requestDTO.getPassword();
+        String encPassword = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
+        requestDTO.setPassword(encPassword);
 
         // 1. 유효성 검사
         if (requestDTO.getUsername().length() < 3) {
@@ -52,9 +62,9 @@ public class UserController {
 
         // 2.동일 username 체크 (나중에 하나의 트랜잭션으로 묶는게 좋다.)
         User user = userRepository.findByUsername(requestDTO.getUsername());
-        try{
+        try {
             userRepository.save(requestDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("아이디가 중복되었어요");
         }
 
@@ -80,7 +90,7 @@ public class UserController {
     public String update(UserRequest.UpdateDTO requestDTO) {
         // 인증 체크, 권한 체크
         User sessionUser = (User) session.getAttribute("sessionUser");
-        if(sessionUser == null){
+        if (sessionUser == null) {
             return "redirect:/loginForm";
         }
 

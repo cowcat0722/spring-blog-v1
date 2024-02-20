@@ -34,6 +34,18 @@ public class UserRepository {
         em.persist(user);
     }
 
+    public User findByUsername(String username) {
+        Query query = em.createNativeQuery("select * from user_tb where username=? ", User.class);
+        query.setParameter(1,username);
+
+        try {
+            User user = (User) query.getSingleResult();
+            return user;
+        } catch (Exception e) {
+            throw new RuntimeException("아이디를 찾을 수 없습니다.");
+        }
+    }
+
     public User findByUsernameAndPassword(UserRequest.LoginDTO requestDTO) {
         Query query = em.createNativeQuery("select * from user_tb where username=? AND password=?", User.class);
         query.setParameter(1,requestDTO.getUsername());
@@ -48,17 +60,17 @@ public class UserRepository {
         }
     }
 
-    public User findByUsername(String username) {
-        Query query = em.createNativeQuery("select * from user_tb where username=?", User.class);
-        query.setParameter(1,username);
-
-        try {
-            User user = (User) query.getSingleResult();
-            return user;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public User findByUsername(String username) {
+//        Query query = em.createNativeQuery("select * from user_tb where username=?", User.class);
+//        query.setParameter(1,username);
+//
+//        try {
+//            User user = (User) query.getSingleResult();
+//            return user;
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }
 
     @Transactional
     public void update(UserRequest.UpdateDTO requestDTO, int id) {
