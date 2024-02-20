@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import shop.mtcoding.blog._core.PagingUtil;
+import shop.mtcoding.blog._core.util.PagingUtil;
 import shop.mtcoding.blog.reply.Reply;
 import shop.mtcoding.blog.reply.ReplyRepository;
 import shop.mtcoding.blog.user.User;

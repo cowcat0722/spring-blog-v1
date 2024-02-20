@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import shop.mtcoding.blog._core.Constant;
+import shop.mtcoding.blog._core.util.Constant;
 
 import java.util.List;
 
