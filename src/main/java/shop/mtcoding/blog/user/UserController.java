@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import shop.mtcoding.blog._core.util.Script;
 
 /**
  * 컨트롤러
@@ -43,13 +41,13 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public @ResponseBody String join(UserRequest.JoinDTO requestDTO) {
+    public String join(UserRequest.JoinDTO requestDTO) {
         // @ResponseBody를 적으면 파일을 반환하는것이 아니라 메시지를 반환한다.
         System.out.println(requestDTO);
 
         // 1. 유효성 검사
         if (requestDTO.getUsername().length() < 3) {
-            return Script.back("아이디의 길이가 3자 이상이어야 합니다.");
+            return "error/400";
         }
 
         // 2.동일 username 체크 (나중에 하나의 트랜잭션으로 묶는게 좋다.)
@@ -57,10 +55,10 @@ public class UserController {
         try{
             userRepository.save(requestDTO);
         }catch (Exception e){
-            return Script.back("아이디가 중복되었어요");
+            throw new RuntimeException("아이디가 중복되었어요");
         }
 
-        return Script.href("/loginForm");
+        return "redirect:/loginForm";
     }
 
     @GetMapping("/joinForm")
