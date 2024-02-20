@@ -38,15 +38,8 @@ public class UserController {
         // 2. Model 필요 (select * from user_tb where username=? and password=?)
         User user = userRepository.findByUsernameAndPassword(requestDTO);
 
-        // 유저가 null이면, error 페이지로
-        // 3. 응답 유저가 null이 아니면, session 만들고, index 페이지로 이동
-        if(user == null){
-            return "error/401";
-        }else{
             session.setAttribute("sessionUser",user);
             return "redirect:/";
-        }
-
     }
 
     @PostMapping("/join")
