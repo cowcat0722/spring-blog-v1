@@ -6,6 +6,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import shop.mtcoding.blog._core.util.ApiUtil;
 
 /**
  * 컨트롤러
@@ -25,6 +27,20 @@ public class UserController {
     private final UserRepository userRepository;
     // IoC 컨테이너에 세션에 접근할 수 있는 변수가 들어가 있음
     private final HttpSession session;
+
+    @GetMapping("/api/username-same-check")
+    public @ResponseBody ApiUtil<?> usernameSameCheck(String username){
+        User user = userRepository.findByUsername(username);
+        System.out.println(username);
+
+        if(user == null){
+            System.out.println("가능");
+            return new ApiUtil<>(true);
+        }else {
+            System.out.println("중복");
+            return new ApiUtil<>(false);
+        }
+    }
 
     // 로그인만 예외로 POST한다
     @PostMapping("/login")
@@ -56,12 +72,11 @@ public class UserController {
         requestDTO.setPassword(encPassword);
 
         // 1. 유효성 검사
-        if (requestDTO.getUsername().length() < 3) {
-            return "error/400";
-        }
+//        if (requestDTO.getUsername().length() < 3) {
+//            return "error/400";
+//        }
 
         // 2.동일 username 체크 (나중에 하나의 트랜잭션으로 묶는게 좋다.)
-        User user = userRepository.findByUsername(requestDTO.getUsername());
         try {
             userRepository.save(requestDTO);
         } catch (Exception e) {

@@ -37,12 +37,15 @@ public class UserRepository {
     public User findByUsername(String username) {
         Query query = em.createNativeQuery("select * from user_tb where username=? ", User.class);
         query.setParameter(1,username);
-
         try {
             User user = (User) query.getSingleResult();
+            System.out.println("1"+ user);
             return user;
         } catch (Exception e) {
+            System.out.println("2");
+
             throw new RuntimeException("아이디를 찾을 수 없습니다.");
+//            return null;
         }
     }
 
