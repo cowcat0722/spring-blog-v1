@@ -10,8 +10,10 @@
         <div class="card-body">
             <form action="/join" method="post" enctype="application/x-www-form-urlencoded" onsubmit="return valid()">
                 <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Enter username" name="username" id="username">
-                    <button type="button" onclick="check()" class="btn btn-warning">아이디 중복체크</button>
+                    <input type="text" class="form-control" placeholder="Enter username" name="username" id="username" onkeyup="check()">
+                    <div id="idCheckText" class="text-warning" style="display:none;">
+                        동일한 아이디가 존재합니다.
+                    </div>
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" placeholder="Enter password" name="password" >
@@ -35,6 +37,10 @@
 
     function check(){
         let username = $("#username").val();
+        if(username.trim() === "") {
+            alert("아이디를 입력해야 합니다");
+            return; // 공백으로 중복 체크하는것 막기
+        }
 
         $.ajax({
             url: "/api/username-same-check?username=" + username,
@@ -42,11 +48,11 @@
         }).done((res)=>{
             console.log("통신 성공");
             if(res.body == false){
-                alert("아이디가 중복되었다!!");
                 isCheck = false;
+                $("#idCheckText").show();
             }else{
-                alert("가입 가능하다!!");
                 isCheck = true;
+                $("#idCheckText").hide();
             }
         }).fail((res)=>{
             console.log("통신 실패");
