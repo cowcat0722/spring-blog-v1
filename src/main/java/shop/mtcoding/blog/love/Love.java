@@ -17,7 +17,7 @@ public class Love {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer board_id;
-    private Integer user_id;
+    private Integer boardId;
+    private Integer userId;
     private Timestamp createdAt;
 }
